@@ -1,0 +1,67 @@
+package Entities;
+
+import enums.ElevatorDirection;
+
+public class ElevatorCar {
+    public int id;
+    public int currentFloor;
+    public int nextFloorStoppage;
+    public ElevatorDirection movingDirection;
+    private Door door;
+
+    public ElevatorCar(int id){
+        this.id = id;
+        this.currentFloor = 1;
+        this.nextFloorStoppage = 1;
+        this.movingDirection = ElevatorDirection.IDLE;
+        this.door = new Door();
+    }
+
+    public void showDisplay(){
+        System.out.println("elevator " + id + " Current floor: " + currentFloor + " going: " + movingDirection);
+    }
+
+    public void moveElevator(int destinationFloor){
+        this.nextFloorStoppage = destinationFloor;
+        if(this.currentFloor == nextFloorStoppage){
+            door.openDoor(id);
+            return;
+        }
+
+        int startFloor = this.currentFloor;
+        door.closeDoor(id);
+        if(nextFloorStoppage >= currentFloor){
+            movingDirection = ElevatorDirection.UP;
+            showDisplay();
+
+            for(int i= startFloor; i <= nextFloorStoppage; i++){
+                try {
+                    Thread.sleep(5);
+                }catch (Exception e){
+
+                }
+                setCurrentFloor(i);
+                showDisplay();
+            }
+        }
+        else{
+            movingDirection = ElevatorDirection.DOWN;
+            showDisplay();
+            for(int i= startFloor - 1; i >= nextFloorStoppage; i--){
+                try{
+                    Thread.sleep(5);
+                }catch (Exception e){
+
+                }
+                setCurrentFloor(i);
+                showDisplay();
+            }
+        }
+        door.openDoor(id);
+    }
+
+    public void setCurrentFloor(int currentFloor){
+        this.currentFloor = currentFloor;
+    }
+
+}
